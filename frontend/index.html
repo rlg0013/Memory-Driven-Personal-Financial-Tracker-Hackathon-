@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HisaabAI - Memory-Driven Finance</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="dashboard">
@@ -17,86 +18,195 @@
                 <h2>HisaabAI</h2>
             </div>
             <nav>
-                <a href="#" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-                <a href="#"><i class="fa-solid fa-bolt"></i> Patterns</a>
-                <a href="#"><i class="fa-solid fa-bullseye"></i> Goal Planner</a>
-                <a href="#"><i class="fa-solid fa-message"></i> Ask HisaabAI</a>
+                <a href="#" class="nav-link active" data-section="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="#" class="nav-link" data-section="insights"><i class="fa-solid fa-bolt"></i> Insights</a>
+                <a href="#" class="nav-link" data-section="transactions"><i class="fa-solid fa-receipt"></i> Transactions</a>
+                <a href="#" class="nav-link" data-section="chat"><i class="fa-solid fa-message"></i> Ask HisaabAI</a>
             </nav>
+            <div class="sidebar-footer">
+                <div class="api-badge">
+                    <span class="status-dot"></span>
+                    <span id="api-status-text">Connecting...</span>
+                </div>
+            </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="content">
-            <header>
-                <div>
-                    <h1>Welcome back! 👋</h1>
-                    <p class="subtitle">Here's your financial memory graph.</p>
-                </div>
-                <div class="api-status">
-                    <span class="status-dot"></span>
-                    <span id="api-status-text">Connecting to Mem-Brain...</span>
-                </div>
-            </header>
+        <main class="content" id="main-content">
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon income"><i class="fa-solid fa-arrow-up"></i></div>
-                    <div class="stat-details">
-                        <p>Total Income</p>
-                        <h3 id="stat-income">₹---</h3>
+            <!-- ═══ DASHBOARD SECTION ═══ -->
+            <section id="section-dashboard" class="section active">
+                <header>
+                    <div>
+                        <h1>Financial Overview 📊</h1>
+                        <p class="subtitle">Your memory-driven financial snapshot</p>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon expense"><i class="fa-solid fa-arrow-down"></i></div>
-                    <div class="stat-details">
-                        <p>Total Spent</p>
-                        <h3 id="stat-spent">₹---</h3>
+                    <div class="month-selector">
+                        <select id="month-select">
+                            <option value="2026-01">January 2026</option>
+                            <option value="2026-02">February 2026</option>
+                        </select>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon net"><i class="fa-solid fa-wallet"></i></div>
-                    <div class="stat-details">
-                        <p>Net Balance</p>
-                        <h3 id="stat-net">₹---</h3>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon count"><i class="fa-solid fa-receipt"></i></div>
-                    <div class="stat-details">
-                        <p>Transactions Memory</p>
-                        <h3 id="stat-count">---</h3>
-                    </div>
-                </div>
-            </div>
+                </header>
 
-            <div class="panels">
-                <div class="panel ai-patterns fade-in">
-                    <div class="panel-header">
-                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Deep Insights & Patterns</h3>
-                        <button class="btn-refresh" onclick="fetchPatterns()"><i class="fa-solid fa-rotate-right"></i></button>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon income"><i class="fa-solid fa-arrow-up"></i></div>
+                        <div class="stat-details">
+                            <p>Total Income</p>
+                            <h3 id="stat-income">₹---</h3>
+                        </div>
                     </div>
-                    <div id="patterns-content" class="panel-content">
-                        <div class="loader">Loading insights from graph...</div>
+                    <div class="stat-card">
+                        <div class="stat-icon expense"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="stat-details">
+                            <p>Total Spent</p>
+                            <h3 id="stat-spent">₹---</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon net"><i class="fa-solid fa-wallet"></i></div>
+                        <div class="stat-details">
+                            <p>Net Balance</p>
+                            <h3 id="stat-net">₹---</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon count"><i class="fa-solid fa-brain"></i></div>
+                        <div class="stat-details">
+                            <p>Memories Stored</p>
+                            <h3 id="stat-count">---</h3>
+                        </div>
                     </div>
                 </div>
 
-                <div class="panel ai-chat fade-in" style="animation-delay: 0.1s;">
-                    <div class="panel-header">
-                        <h3><i class="fa-solid fa-robot"></i> Ask HisaabAI</h3>
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Spending by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
                     </div>
+                    <div class="chart-card">
+                        <h3><i class="fa-solid fa-chart-bar"></i> Category Breakdown</h3>
+                        <div class="chart-container">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Detail Cards -->
+                <div class="category-detail-section">
+                    <h3><i class="fa-solid fa-tags"></i> Category Details</h3>
+                    <div id="category-cards" class="category-cards-grid">
+                        <div class="loader">Loading category data...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ INSIGHTS SECTION ═══ -->
+            <section id="section-insights" class="section">
+                <header>
+                    <div>
+                        <h1>Deep Insights 🔍</h1>
+                        <p class="subtitle">AI-powered behavioral analysis from your memory graph</p>
+                    </div>
+                    <button class="btn-refresh" onclick="fetchPatterns()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                </header>
+
+                <div class="insights-grid">
+                    <div class="insight-card full-width">
+                        <div class="insight-header">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <h3>Spending Patterns</h3>
+                        </div>
+                        <div id="patterns-content" class="insight-body">
+                            <div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Analyzing memory graph...</div>
+                        </div>
+                    </div>
+
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <i class="fa-solid fa-fire-flame-curved"></i>
+                            <h3>Top Spending Areas</h3>
+                        </div>
+                        <div id="top-spending-content" class="insight-body">
+                            <div class="loader">Loading...</div>
+                        </div>
+                    </div>
+
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <i class="fa-solid fa-calendar-week"></i>
+                            <h3>Month Comparison</h3>
+                        </div>
+                        <div class="insight-body">
+                            <canvas id="compareChart" height="220"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="insight-card full-width">
+                        <div class="insight-header">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <h3>Spending Over Time</h3>
+                        </div>
+                        <div class="insight-body">
+                            <canvas id="timelineChart" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══ TRANSACTIONS SECTION ═══ -->
+            <section id="section-transactions" class="section">
+                <header>
+                    <div>
+                        <h1>Transaction History 📋</h1>
+                        <p class="subtitle">All transactions stored in your memory graph</p>
+                    </div>
+                </header>
+                <div class="table-container">
+                    <table id="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Merchant</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-body">
+                            <tr><td colspan="5" class="loader">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ═══ CHAT SECTION ═══ -->
+            <section id="section-chat" class="section">
+                <header>
+                    <div>
+                        <h1>Ask HisaabAI 🤖</h1>
+                        <p class="subtitle">Your AI-powered financial consultant</p>
+                    </div>
+                </header>
+                <div class="chat-panel">
                     <div class="chat-window">
                         <div id="chat-messages" class="messages">
                             <div class="msg bot">
                                 <div class="avatar"><i class="fa-solid fa-brain"></i></div>
-                                <div class="bubble">Hello! I'm HisaabAI. Ask me anything about your spending history, habits, or create a savings plan!</div>
+                                <div class="bubble">Hello! I'm HisaabAI. Ask me anything about your spending history, habits, or savings plans! Try: <em>"Where did I spend the most?"</em></div>
                             </div>
                         </div>
                         <div class="chat-input-area">
-                            <input type="text" id="chat-input" placeholder="e.g., Why do my savings plans fail?" onkeypress="handleKeyPress(event)">
+                            <input type="text" id="chat-input" placeholder="Ask about your finances..." onkeypress="handleKeyPress(event)">
                             <button class="btn-primary" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
     <script src="app.js"></script>
