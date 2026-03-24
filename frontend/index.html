@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HisaabAI - Memory-Driven Finance</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-brain"></i>
+                <h2>HisaabAI</h2>
+            </div>
+            <nav>
+                <a href="#" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="#"><i class="fa-solid fa-bolt"></i> Patterns</a>
+                <a href="#"><i class="fa-solid fa-bullseye"></i> Goal Planner</a>
+                <a href="#"><i class="fa-solid fa-message"></i> Ask HisaabAI</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header>
+                <div>
+                    <h1>Welcome back! 👋</h1>
+                    <p class="subtitle">Here's your financial memory graph.</p>
+                </div>
+                <div class="api-status">
+                    <span class="status-dot"></span>
+                    <span id="api-status-text">Connecting to Mem-Brain...</span>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon income"><i class="fa-solid fa-arrow-up"></i></div>
+                    <div class="stat-details">
+                        <p>Total Income</p>
+                        <h3 id="stat-income">₹---</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon expense"><i class="fa-solid fa-arrow-down"></i></div>
+                    <div class="stat-details">
+                        <p>Total Spent</p>
+                        <h3 id="stat-spent">₹---</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon net"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="stat-details">
+                        <p>Net Balance</p>
+                        <h3 id="stat-net">₹---</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon count"><i class="fa-solid fa-receipt"></i></div>
+                    <div class="stat-details">
+                        <p>Transactions Memory</p>
+                        <h3 id="stat-count">---</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panels">
+                <div class="panel ai-patterns fade-in">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Deep Insights & Patterns</h3>
+                        <button class="btn-refresh" onclick="fetchPatterns()"><i class="fa-solid fa-rotate-right"></i></button>
+                    </div>
+                    <div id="patterns-content" class="panel-content">
+                        <div class="loader">Loading insights from graph...</div>
+                    </div>
+                </div>
+
+                <div class="panel ai-chat fade-in" style="animation-delay: 0.1s;">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-robot"></i> Ask HisaabAI</h3>
+                    </div>
+                    <div class="chat-window">
+                        <div id="chat-messages" class="messages">
+                            <div class="msg bot">
+                                <div class="avatar"><i class="fa-solid fa-brain"></i></div>
+                                <div class="bubble">Hello! I'm HisaabAI. Ask me anything about your spending history, habits, or create a savings plan!</div>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="e.g., Why do my savings plans fail?" onkeypress="handleKeyPress(event)">
+                            <button class="btn-primary" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

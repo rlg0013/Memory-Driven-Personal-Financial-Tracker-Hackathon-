@@ -1,0 +1,24 @@
+{
+  "messages": [
+    {"id": "sms_001", "text": "INR 450.00 debited from A/C XX1234 at ZOMATO on 2026-01-03. Avl Bal: INR 12,340.00", "date": "2026-01-03"},
+    {"id": "sms_002", "text": "INR 2,500.00 debited from A/C XX1234 at AMAZON on 2026-01-05. Avl Bal: INR 9,840.00", "date": "2026-01-05"},
+    {"id": "sms_003", "text": "INR 800.00 debited from A/C XX1234 via UPI to SPOTIFY on 2026-01-07. Avl Bal: INR 9,040.00", "date": "2026-01-07"},
+    {"id": "sms_004", "text": "INR 1,200.00 debited from A/C XX1234 at BIG BAZAAR on 2026-01-10. Avl Bal: INR 7,840.00", "date": "2026-01-10"},
+    {"id": "sms_005", "text": "INR 350.00 debited via UPI to SWIGGY on 2026-01-12. Avl Bal: INR 7,490.00", "date": "2026-01-12"},
+    {"id": "sms_006", "text": "INR 15,000.00 credited to A/C XX1234. Salary Jan 2026. Avl Bal: INR 22,490.00", "date": "2026-01-15"},
+    {"id": "sms_007", "text": "INR 6,500.00 debited from A/C XX1234. EMI HDFC LOAN on 2026-01-16. Avl Bal: INR 15,990.00", "date": "2026-01-16"},
+    {"id": "sms_008", "text": "INR 500.00 debited via UPI to ZOMATO on 2026-01-19. Avl Bal: INR 15,490.00", "date": "2026-01-19"},
+    {"id": "sms_009", "text": "INR 3,200.00 debited at RELIANCE DIGITAL on 2026-01-22. Avl Bal: INR 12,290.00", "date": "2026-01-22"},
+    {"id": "sms_010", "text": "INR 420.00 debited via UPI to SWIGGY on 2026-01-25. Avl Bal: INR 11,870.00", "date": "2026-01-25"},
+    {"id": "sms_011", "text": "INR 1,800.00 debited at DECATHLON on 2026-01-28. Avl Bal: INR 10,070.00", "date": "2026-01-28"},
+    {"id": "sms_012", "text": "INR 650.00 debited via UPI to ZOMATO on 2026-01-30. Avl Bal: INR 9,420.00", "date": "2026-01-30"},
+    {"id": "sms_013", "text": "INR 480.00 debited via UPI to SWIGGY on 2026-02-02. Avl Bal: INR 8,940.00", "date": "2026-02-02"},
+    {"id": "sms_014", "text": "INR 2,200.00 debited at FLIPKART on 2026-02-05. Avl Bal: INR 6,740.00", "date": "2026-02-05"},
+    {"id": "sms_015", "text": "INR 15,000.00 credited to A/C XX1234. Salary Feb 2026. Avl Bal: INR 21,740.00", "date": "2026-02-15"},
+    {"id": "sms_016", "text": "INR 6,500.00 debited from A/C XX1234. EMI HDFC LOAN on 2026-02-16. Avl Bal: INR 15,240.00", "date": "2026-02-16"},
+    {"id": "sms_017", "text": "INR 550.00 debited via UPI to ZOMATO on 2026-02-18. Avl Bal: INR 14,690.00", "date": "2026-02-18"},
+    {"id": "sms_018", "text": "INR 4,500.00 debited at MAKEMYTRIP on 2026-02-20. Avl Bal: INR 10,190.00", "date": "2026-02-20"},
+    {"id": "sms_019", "text": "INR 600.00 debited via UPI to SWIGGY on 2026-02-25. Avl Bal: INR 9,590.00", "date": "2026-02-25"},
+    {"id": "sms_020", "text": "INR 700.00 debited via UPI to ZOMATO on 2026-02-28. Avl Bal: INR 8,890.00", "date": "2026-02-28"}
+  ]
+}
