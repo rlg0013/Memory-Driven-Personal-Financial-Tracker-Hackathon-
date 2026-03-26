@@ -15,7 +15,10 @@ from agent import (
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from memory_graph import (
+    get_goal_reasoning,
+    get_memory_graph_data,
     get_monthly_summary,
+    get_overspending_analysis,
     get_stats,
     health_check,
     ingest_transactions,
@@ -76,6 +79,23 @@ class EventRequest(BaseModel):
 class PlanRequest(BaseModel):
     goal_text: str
     weeks: Optional[int] = 6
+
+
+class GoalReasoningRequest(BaseModel):
+    goal_text: Optional[str] = None
+    target_amount: Optional[float] = None
+    deadline: Optional[str] = None
+
+
+class GoalTrackerAdviceRequest(BaseModel):
+    goal_text: str
+    target_amount: Optional[float] = None
+    remaining_target: float
+    remaining_checkpoints: int
+    next_required: float
+    cadence: str
+    missed_checkpoints: int
+    saved_so_far: Optional[float] = 0.0
 
 
 class ChatRequest(BaseModel):
@@ -190,6 +210,28 @@ def spending_patterns():
         raise HTTPException(500, str(e))
 
 
+@app.get("/memory-graph")
+def memory_graph():
+    """
+    Structured memory graph for visualization in the frontend.
+    """
+    try:
+        return get_memory_graph_data()
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
+@app.get("/overspending")
+def overspending_analysis():
+    """
+    Explain overspending using recurring merchants, categories, and timing signals.
+    """
+    try:
+        return get_overspending_analysis()
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
 # ── Savings plan ──────────────────────────────────────────────────────────────
 
 
@@ -201,6 +243,49 @@ def savings_plan(req: PlanRequest):
     try:
         plan = create_savings_plan(req.goal_text, req.weeks)
         return {"goal": req.goal_text, "weeks": req.weeks, "plan": plan}
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
+@app.post("/goal/reasoning")
+def goal_reasoning(req: GoalReasoningRequest):
+    """
+    Explain which memories and categories are helping or hurting a savings goal.
+    """
+    try:
+        return get_goal_reasoning(req.goal_text, req.target_amount, req.deadline)
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
+@app.post("/goal/tracker-advice")
+def goal_tracker_advice(req: GoalTrackerAdviceRequest):
+    """
+    Ask the AI layer for recovery advice when the user misses goal checkpoints.
+    """
+    try:
+        if req.remaining_checkpoints <= 0:
+            return {
+                "advice": (
+                    "There are no remaining checkpoints left, so the best next step is to extend the deadline "
+                    "or reduce the target before rebuilding the plan."
+                )
+            }
+
+        prompt = (
+            f"I am tracking a savings goal called '{req.goal_text}'. "
+            f"The original target is Rs {req.target_amount or 0:,.0f}. "
+            f"I have already saved Rs {req.saved_so_far or 0:,.0f}. "
+            f"I missed {req.missed_checkpoints} {req.cadence} checkpoints. "
+            f"I still need Rs {req.remaining_target:,.0f} across {req.remaining_checkpoints} remaining checkpoints, "
+            f"and the next checkpoint now requires Rs {req.next_required:,.0f}. "
+            "Using my transaction history and spending patterns from memory, give concise recovery advice with: "
+            "1. the highest-impact cut to make immediately, "
+            "2. one behavior to stop this week, "
+            "3. one exact move to recover the goal on the next checkpoint."
+        )
+        advice, _history = ask_hisaabai(prompt, history=[])
+        return {"advice": advice}
     except Exception as e:
         raise HTTPException(500, str(e))
 

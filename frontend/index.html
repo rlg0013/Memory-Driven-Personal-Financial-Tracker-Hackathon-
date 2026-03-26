@@ -3,212 +3,567 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HisaabAI - Memory-Driven Finance</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>CatMoney | Memory-Driven Finance</title>
+    <meta name="description" content="CatMoney helps you track spending, inspect memory-backed financial behavior, and ask contextual questions about your money.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 </head>
 <body>
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
-                <i class="fa-solid fa-brain"></i>
-                <h2>HisaabAI</h2>
-            </div>
-            <nav>
-                <a href="#" class="nav-link active" data-section="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-                <a href="#" class="nav-link" data-section="insights"><i class="fa-solid fa-bolt"></i> Insights</a>
-                <a href="#" class="nav-link" data-section="transactions"><i class="fa-solid fa-receipt"></i> Transactions</a>
-                <a href="#" class="nav-link" data-section="chat"><i class="fa-solid fa-message"></i> Ask HisaabAI</a>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="api-badge">
-                    <span class="status-dot"></span>
-                    <span id="api-status-text">Connecting...</span>
-                </div>
-            </div>
-        </aside>
+    <div class="page-shell">
+        <div class="background" aria-hidden="true"></div>
+        <div class="background-tint" aria-hidden="true"></div>
+        <div class="grid-haze" aria-hidden="true"></div>
 
-        <!-- Main Content -->
-        <main class="content" id="main-content">
+        <div class="app-frame">
+            <header class="topbar">
+                <a class="brand" href="#">
+                    <span class="brand-mark">
+                        <img src="assets/logo1.jpeg" alt="CatMoney logo">
+                    </span>
+                    <span class="brand-copy">
+                        <span class="brand-kicker">Memory-driven finance</span>
+                        <span class="brand-name">CatMoney</span>
+                    </span>
+                </a>
 
-            <!-- ═══ DASHBOARD SECTION ═══ -->
-            <section id="section-dashboard" class="section active">
-                <header>
-                    <div>
-                        <h1>Financial Overview 📊</h1>
-                        <p class="subtitle">Your memory-driven financial snapshot</p>
-                    </div>
-                    <div class="month-selector">
-                        <select id="month-select">
-                            <option value="2026-01">January 2026</option>
-                            <option value="2026-02">February 2026</option>
-                        </select>
-                    </div>
-                </header>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-section="dashboard">Overview</a>
+                    <a href="#" class="nav-link" data-section="insights">Insights</a>
+                    <a href="#" class="nav-link" data-section="memory-graph">Memory Graph</a>
+                    <a href="#" class="nav-link" data-section="overspending">Overspending</a>
+                    <a href="#" class="nav-link" data-section="goal-reasoning">Goal Reasoning</a>
+                    <a href="#" class="nav-link" data-section="transactions">Transactions</a>
+                    <a href="#" class="nav-link" data-section="chat">Assistant</a>
+                </nav>
 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon income"><i class="fa-solid fa-arrow-up"></i></div>
-                        <div class="stat-details">
-                            <p>Total Income</p>
-                            <h3 id="stat-income">₹---</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon expense"><i class="fa-solid fa-arrow-down"></i></div>
-                        <div class="stat-details">
-                            <p>Total Spent</p>
-                            <h3 id="stat-spent">₹---</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon net"><i class="fa-solid fa-wallet"></i></div>
-                        <div class="stat-details">
-                            <p>Net Balance</p>
-                            <h3 id="stat-net">₹---</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon count"><i class="fa-solid fa-brain"></i></div>
-                        <div class="stat-details">
-                            <p>Memories Stored</p>
-                            <h3 id="stat-count">---</h3>
-                        </div>
-                    </div>
-                </div>
+                <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode" title="Toggle theme">
+                    <span class="theme-toggle-icon"><i class="fa-solid fa-moon"></i></span>
+                </button>
+            </header>
 
-                <!-- Charts Row -->
-                <div class="charts-row">
-                    <div class="chart-card">
-                        <h3><i class="fa-solid fa-chart-pie"></i> Spending by Category</h3>
-                        <div class="chart-container">
-                            <canvas id="categoryChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-card">
-                        <h3><i class="fa-solid fa-chart-bar"></i> Category Breakdown</h3>
-                        <div class="chart-container">
-                            <canvas id="barChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+            <main class="content" id="main-content">
+                <section id="section-dashboard" class="section active">
+                    <div class="hero-grid">
+                        <section class="hero-copy panel hero-panel">
+                            <div class="eyebrow-wrap">
+                                <p class="eyebrow">Budget intelligence, made visceral</p>
+                                <div class="hero-status">
+                                    <span class="status-dot"></span>
+                                    <span id="api-status-text">Connecting to backend...</span>
+                                </div>
+                            </div>
 
-                <!-- Category Detail Cards -->
-                <div class="category-detail-section">
-                    <h3><i class="fa-solid fa-tags"></i> Category Details</h3>
-                    <div id="category-cards" class="category-cards-grid">
-                        <div class="loader">Loading category data...</div>
-                    </div>
-                </div>
-            </section>
+                            <h1>
+                                See every
+                                <span class="hero-line">rupee clearly</span>
+                                with <span class="hero-accent">CatMoney</span>
+                            </h1>
 
-            <!-- ═══ INSIGHTS SECTION ═══ -->
-            <section id="section-insights" class="section">
-                <header>
-                    <div>
-                        <h1>Deep Insights 🔍</h1>
-                        <p class="subtitle">AI-powered behavioral analysis from your memory graph</p>
-                    </div>
-                    <button class="btn-refresh" onclick="fetchPatterns()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
-                </header>
+                            <p class="subtitle">
+                                Built around memory graphs, interpreted search, and goal reasoning. The entire product shell is redesigned for a sharper demo without changing the underlying features.
+                            </p>
 
-                <div class="insights-grid">
-                    <div class="insight-card full-width">
-                        <div class="insight-header">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            <h3>Spending Patterns</h3>
-                        </div>
-                        <div id="patterns-content" class="insight-body">
-                            <div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Analyzing memory graph...</div>
-                        </div>
-                    </div>
+                            <div class="hero-actions">
+                                <label class="primary-button select-button" for="month-select">
+                                    <span class="action-copy">
+                                        <span class="action-label">Focus month</span>
+                                        <span class="action-value">Review snapshot</span>
+                                    </span>
+                                    <select id="month-select">
+                                        <option value="2026-01">January 2026</option>
+                                        <option value="2026-02">February 2026</option>
+                                    </select>
+                                </label>
 
-                    <div class="insight-card">
-                        <div class="insight-header">
-                            <i class="fa-solid fa-fire-flame-curved"></i>
-                            <h3>Top Spending Areas</h3>
-                        </div>
-                        <div id="top-spending-content" class="insight-body">
-                            <div class="loader">Loading...</div>
-                        </div>
+                                <div class="secondary-card">
+                                    <p class="panel-label">Live stack</p>
+                                    <div class="stack-badges">
+                                        <span>Mem-Brain</span>
+                                        <span>Graph Search</span>
+                                        <span>AI Layer</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="feature-row">
+                                <span>Contextual answers</span>
+                                <span>Linked memory reasoning</span>
+                                <span>Goal conflict analysis</span>
+                            </div>
+                        </section>
+
+                        <section class="dashboard-card dashboard-command">
+                            <div class="command-top">
+                                <article class="panel panel-balance spotlight-panel">
+                                    <p class="panel-label">Net balance</p>
+                                    <h2 id="stat-net">Rs 0</h2>
+                                    <p class="panel-trend">Live from your selected month</p>
+                                </article>
+
+                                <div class="stats-grid">
+                                    <article class="panel stat-panel">
+                                        <p class="panel-label">Income</p>
+                                        <strong id="stat-income">Rs 0</strong>
+                                        <p>Tracked credits in the memory store.</p>
+                                    </article>
+
+                                    <article class="panel stat-panel">
+                                        <p class="panel-label">Spent</p>
+                                        <strong id="stat-spent">Rs 0</strong>
+                                        <p>All debit events in this window.</p>
+                                    </article>
+
+                                    <article class="panel stat-panel wide-panel">
+                                        <div>
+                                            <p class="panel-label">Memories stored</p>
+                                            <strong id="stat-count">0</strong>
+                                            <p>Transaction nodes available for retrieval.</p>
+                                        </div>
+                                        <div class="bar-list" aria-hidden="true">
+                                            <span style="--fill:88%"></span>
+                                            <span style="--fill:61%"></span>
+                                            <span style="--fill:46%"></span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </section>
                     </div>
 
-                    <div class="insight-card">
-                        <div class="insight-header">
-                            <i class="fa-solid fa-calendar-week"></i>
-                            <h3>Month Comparison</h3>
-                        </div>
-                        <div class="insight-body">
-                            <canvas id="compareChart" height="220"></canvas>
-                        </div>
-                    </div>
+                    <div class="dashboard-grid">
+                        <article class="panel panel-chart">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Category mix</p>
+                                    <h3>Where your money is going</h3>
+                                </div>
+                            </div>
+                            <div class="chart-container donut-chart">
+                                <canvas id="categoryChart"></canvas>
+                            </div>
+                        </article>
 
-                    <div class="insight-card full-width">
-                        <div class="insight-header">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <h3>Spending Over Time</h3>
-                        </div>
-                        <div class="insight-body">
-                            <canvas id="timelineChart" height="150"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                        <article class="panel panel-chart">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Breakdown</p>
+                                    <h3>Category comparison</h3>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </article>
 
-            <!-- ═══ TRANSACTIONS SECTION ═══ -->
-            <section id="section-transactions" class="section">
-                <header>
-                    <div>
-                        <h1>Transaction History 📋</h1>
-                        <p class="subtitle">All transactions stored in your memory graph</p>
+                        <article class="panel full-width">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Spend details</p>
+                                    <h3>Largest categories this month</h3>
+                                </div>
+                            </div>
+                            <div id="category-cards" class="category-cards-grid">
+                                <div class="loader">Loading category data...</div>
+                            </div>
+                        </article>
                     </div>
-                </header>
-                <div class="table-container">
-                    <table id="transactions-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Merchant</th>
-                                <th>Category</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactions-body">
-                            <tr><td colspan="5" class="loader">Loading transactions...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+                </section>
 
-            <!-- ═══ CHAT SECTION ═══ -->
-            <section id="section-chat" class="section">
-                <header>
-                    <div>
-                        <h1>Ask HisaabAI 🤖</h1>
-                        <p class="subtitle">Your AI-powered financial consultant</p>
+                <section id="section-insights" class="section">
+                    <div class="section-grid">
+                        <header class="section-header panel section-banner">
+                            <div>
+                                <p class="eyebrow">Insights</p>
+                                <h2>Behavioral spending analysis</h2>
+                                <p class="subtitle">Pattern summaries, category ranking, month comparison, and timeline data using the existing backend.</p>
+                            </div>
+                            <button class="secondary-link refresh-button" onclick="fetchPatterns()">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                <span>Refresh analysis</span>
+                            </button>
+                        </header>
+
+                        <div class="insights-grid">
+                            <article class="panel full-width">
+                                <div class="section-heading">
+                                    <div>
+                                        <p class="panel-label">Narrative</p>
+                                        <h3>Spending patterns</h3>
+                                    </div>
+                                </div>
+                                <div id="patterns-content" class="insight-body">
+                                    <div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> Analyzing memory graph...</div>
+                                </div>
+                            </article>
+
+                            <article class="panel">
+                                <div class="section-heading">
+                                    <div>
+                                        <p class="panel-label">Ranked</p>
+                                        <h3>Top spending areas</h3>
+                                    </div>
+                                </div>
+                                <div id="top-spending-content" class="insight-body">
+                                    <div class="loader">Loading...</div>
+                                </div>
+                            </article>
+
+                            <article class="panel">
+                                <div class="section-heading">
+                                    <div>
+                                        <p class="panel-label">Monthly view</p>
+                                        <h3>January vs February</h3>
+                                    </div>
+                                </div>
+                                <div class="chart-container compact-chart">
+                                    <canvas id="compareChart"></canvas>
+                                </div>
+                            </article>
+
+                            <article class="panel full-width">
+                                <div class="section-heading">
+                                    <div>
+                                        <p class="panel-label">Rhythm</p>
+                                        <h3>Daily spending over time</h3>
+                                    </div>
+                                </div>
+                                <div class="chart-container timeline-chart">
+                                    <canvas id="timelineChart"></canvas>
+                                </div>
+                            </article>
+                        </div>
                     </div>
-                </header>
-                <div class="chat-panel">
-                    <div class="chat-window">
-                        <div id="chat-messages" class="messages">
-                            <div class="msg bot">
-                                <div class="avatar"><i class="fa-solid fa-brain"></i></div>
-                                <div class="bubble">Hello! I'm HisaabAI. Ask me anything about your spending history, habits, or savings plans! Try: <em>"Where did I spend the most?"</em></div>
+                </section>
+
+                <section id="section-memory-graph" class="section">
+                    <div class="section-grid">
+                        <header class="section-header panel section-banner">
+                            <div>
+                                <p class="eyebrow">Feature 1</p>
+                                <h2>Memory Graph View</h2>
+                                <p class="subtitle">Transactions, merchants, categories, months, goals, and life events shown as linked memories in a cleaner staged view.</p>
+                            </div>
+                        </header>
+
+                        <article class="panel graph-summary-panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Graph summary</p>
+                                    <h3>How Mem-Brain is organizing financial memory</h3>
+                                </div>
+                            </div>
+                            <div id="graph-summary" class="insight-grid-mini">
+                                <div class="loader">Loading graph summary...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel full-width graph-panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Memory relations</p>
+                                    <h3>Minimal relation diagram</h3>
+                                </div>
+                            </div>
+                            <div class="graph-controls">
+                                <button type="button" class="graph-filter active" data-graph-filter="all">All nodes</button>
+                                <button type="button" class="graph-filter" data-graph-filter="transaction">Transactions</button>
+                                <button type="button" class="graph-filter" data-graph-filter="category">Categories</button>
+                                <button type="button" class="graph-filter" data-graph-filter="merchant">Merchants</button>
+                                <button type="button" class="graph-filter" data-graph-filter="goal">Goals</button>
+                            </div>
+                            <div id="memory-graph-board" class="memory-graph-board">
+                                <div class="loader">Loading memory graph...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel full-width">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Selected node</p>
+                                    <h3>Relation detail</h3>
+                                </div>
+                            </div>
+                            <div id="graph-node-detail" class="stack-list">
+                                <div class="loader">Select a node to inspect its relations.</div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="section-overspending" class="section">
+                    <div class="section-grid">
+                        <header class="section-header panel section-banner">
+                            <div>
+                                <p class="eyebrow">Feature 2</p>
+                                <h2>Why Am I Overspending?</h2>
+                                <p class="subtitle">A memory-backed explainer that surfaces recurring categories, repeat merchants, timing spikes, and practical cuts.</p>
+                            </div>
+                        </header>
+
+                        <article class="panel full-width">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Summary</p>
+                                    <h3>Behavioral explanation</h3>
+                                </div>
+                            </div>
+                            <div id="overspending-summary" class="insight-body">
+                                <div class="loader">Loading overspending analysis...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Drivers</p>
+                                    <h3>Main overspending signals</h3>
+                                </div>
+                            </div>
+                            <div id="overspending-drivers" class="stack-list">
+                                <div class="loader">Loading drivers...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Recommendations</p>
+                                    <h3>Highest-impact cuts</h3>
+                                </div>
+                            </div>
+                            <div id="overspending-recommendations" class="stack-list">
+                                <div class="loader">Loading recommendations...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Behavior split</p>
+                                    <h3>Fixed vs discretionary pressure</h3>
+                                </div>
+                            </div>
+                            <div id="overspending-behavior-split" class="stack-list">
+                                <div class="loader">Loading behavior split...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Top categories</p>
+                                    <h3>Spend concentration</h3>
+                                </div>
+                            </div>
+                            <div id="overspending-categories" class="stack-list">
+                                <div class="loader">Loading category pressure...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Top merchants</p>
+                                    <h3>Repeat behavior</h3>
+                                </div>
+                            </div>
+                            <div id="overspending-merchants" class="stack-list">
+                                <div class="loader">Loading merchant pressure...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Timing</p>
+                                    <h3>When the pressure appears</h3>
+                                </div>
+                            </div>
+                            <div id="overspending-timing" class="stack-list">
+                                <div class="loader">Loading timing analysis...</div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="section-goal-reasoning" class="section">
+                    <div class="section-grid">
+                        <header class="section-header panel section-banner">
+                            <div>
+                                <p class="eyebrow">Feature 3</p>
+                                <h2>Goal Conflict View</h2>
+                                <p class="subtitle">Set or inspect a goal, then see which memories and spending patterns are working against it.</p>
+                            </div>
+                        </header>
+
+                        <article class="panel full-width">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Goal input</p>
+                                    <h3>Create a goal reasoning scenario</h3>
+                                </div>
+                            </div>
+                            <form id="goal-reasoning-form" class="goal-form">
+                                <input type="text" id="goal-text-input" placeholder="Goal text, e.g. Goa trip in 6 weeks">
+                                <input type="number" id="goal-target-input" placeholder="Target amount">
+                                <input type="date" id="goal-deadline-input">
+                                <button type="submit" class="btn-primary goal-submit">Analyze Goal</button>
+                            </form>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Goal summary</p>
+                                    <h3>Current target pressure</h3>
+                                </div>
+                            </div>
+                            <div id="goal-summary" class="insight-grid-mini">
+                                <div class="loader">Loading goal reasoning...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Weekly plan</p>
+                                    <h3>Recommended next actions</h3>
+                                </div>
+                            </div>
+                            <div id="goal-plan" class="stack-list">
+                                <div class="loader">Loading action plan...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel full-width">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Goal tracker</p>
+                                    <h3>Adaptive checkpoints</h3>
+                                </div>
+                                <button type="button" class="secondary-link" id="goal-tracker-reset">Reset tracker</button>
+                            </div>
+                            <div id="goal-tracker-summary" class="goal-tracker-summary">
+                                <div class="loader">Analyze a goal to generate checkpoints.</div>
+                            </div>
+                            <div id="goal-tracker-advice" class="goal-tracker-advice">
+                                <div class="loader">Recovery advice appears here if you miss a checkpoint.</div>
+                            </div>
+                            <div id="goal-tracker-list" class="goal-tracker-list">
+                                <div class="loader">Tracker will appear after goal analysis.</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Pressure points</p>
+                                    <h3>What is creating goal stress</h3>
+                                </div>
+                            </div>
+                            <div id="goal-pressure-points" class="stack-list">
+                                <div class="loader">Loading pressure points...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Conflict categories</p>
+                                    <h3>What is hurting this goal</h3>
+                                </div>
+                            </div>
+                            <div id="goal-conflicts" class="stack-list">
+                                <div class="loader">Loading conflicts...</div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Linked memories</p>
+                                    <h3>Transactions used in reasoning</h3>
+                                </div>
+                            </div>
+                            <div id="goal-linked-transactions" class="stack-list">
+                                <div class="loader">Loading linked transactions...</div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="section-transactions" class="section">
+                    <div class="section-grid">
+                        <header class="section-header panel section-banner">
+                            <div>
+                                <p class="eyebrow">Ledger</p>
+                                <h2>Transaction history</h2>
+                                <p class="subtitle">All existing transaction features stay unchanged. This view is only reframed for a cleaner, more deliberate demo flow.</p>
+                            </div>
+                        </header>
+
+                        <article class="panel full-width">
+                            <div class="section-heading">
+                                <div>
+                                    <p class="panel-label">Activity feed</p>
+                                    <h3>Recent entries</h3>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table id="transactions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Merchant</th>
+                                            <th>Category</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactions-body">
+                                        <tr><td colspan="5" class="loader">Loading transactions...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="section-chat" class="section">
+                    <div class="section-grid">
+                        <header class="section-header panel section-banner">
+                            <div>
+                                <p class="eyebrow">Assistant</p>
+                                <h2>Ask CatMoney anything</h2>
+                                <p class="subtitle">The chat flow, API calls, and response rendering remain intact. Only the shell has been redesigned for a stronger live demo.</p>
+                            </div>
+                        </header>
+
+                        <div class="panel chat-window full-width">
+                            <div id="chat-messages" class="messages">
+                                <div class="msg bot">
+                                    <div class="avatar"><i class="fa-solid fa-brain"></i></div>
+                                    <div class="bubble">Hello. Ask about spending history, recurring categories, or tradeoffs in your savings plan. Try: <em>"Where did I spend the most?"</em></div>
+                                </div>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" id="chat-input" placeholder="Ask about your finances..." onkeypress="handleKeyPress(event)">
+                                <button class="btn-primary" onclick="sendMessage()" aria-label="Send message">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="chat-input-area">
-                            <input type="text" id="chat-input" placeholder="Ask about your finances..." onkeypress="handleKeyPress(event)">
-                            <button class="btn-primary" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-                        </div>
                     </div>
-                </div>
-            </section>
-        </main>
+                </section>
+            </main>
+        </div>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>

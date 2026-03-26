@@ -13,6 +13,7 @@ __pycache__/
 
 # Custom Local Database
 backend/local_graph.json
+backend/*.log
 
 # Node modules (for future frontend framework)
 node_modules/
